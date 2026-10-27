@@ -1,20 +1,15 @@
 import { openDB } from 'idb';
 import type { State } from './data';
 import { emptyState } from './data';
+import {saveCloud} from './cloud';
 const db = openDB('saddle-school-web-v1', 1, { upgrade(d) { d.createObjectStore('records'); d.createObjectStore('videos'); } });
-export async function loadState(): Promise<State> { return (await (await db).get('records', 'state')) ?? structuredClone(emptyState); }
-export async function saveState(state: State, video?: {id:string; file:Blob}, removeVideo?: string) {
-  const d = await db; const tx = d.transaction(['records','videos'], 'readwrite');
-  await tx.objectStore('records').put(state, 'state');
-  if (video) await tx.objectStore('videos').put(video.file, video.id);
-  if (removeVideo) await tx.objectStore('videos').delete(removeVideo);
-  await tx.done;
+export async function loadLegacyState(): Promise<State> { return (await (await db).get('records', 'state')) ?? structuredClone(emptyState); }
+export async function legacyVideo(id:string):Promise<Blob|undefined> {return (await db).get('videos',id);}
+export { loadCloud as loadState, downloadVideo as getVideo } from './cloud';
+export async function saveState(state: State, video?:{id:string;file:Blob}, _removeVideo?:string) {
+  await saveCloud(state,video);
 }
-export async function getVideo(id: string): Promise<Blob | undefined> { return (await db).get('videos', id); }
-export async function replaceState(state: State) {
-  const d = await db; const tx = d.transaction(['records','videos'],'readwrite');
-  await tx.objectStore('records').put(state, 'state'); await tx.objectStore('videos').clear(); await tx.done;
-}
+export async function replaceState(state: State) { await saveCloud(state); }
 export async function photoData(file: File): Promise<string> {
   if (!['image/jpeg','image/png','image/webp'].includes(file.type)) throw new Error('Choose a JPG, PNG, or WebP photo. Convert HEIC photos to JPG first.');
   if (file.size > 15 * 1024 * 1024) throw new Error('Choose a photo under 15 MB.');

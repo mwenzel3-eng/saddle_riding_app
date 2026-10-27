@@ -1,27 +1,13 @@
-# Development notes
+# Cloud implementation notes
 
-## Scope and data model
+Public static frontend; Supabase JWT ownership enforcement, no frontend privileged key. Memberships are administered server-side. Users have SELECT-only access to their own membership/document/history rows through RLS. A guarded SECURITY DEFINER save RPC derives identity from auth.uid(), checks membership, checks the client-expected user, validates document shape and checks the version before saving. Direct client table writes and version-history mutation are revoked. A private-schema trigger retains each saved version. Privileged functions have empty search paths and revoked default PUBLIC execution; only the guarded RPC is granted to authenticated.
 
-This supersedes the earlier native-only scaffold with a shared React client. No singing-trainer files were copied or changed. No connection to the user's existing singing repository was required.
+Media paths are user UUID / immutable random clip ID. Private bucket SELECT/INSERT policies require the path owner and active membership. Clients cannot overwrite or delete stored clips. Old clips remain for historical restore; replacing a clip and failing to save may leave an unlinked stored file. External backups include retained/unlinked media. No automatic garbage collection or retention deletion.
 
-One local rider profile has multiple horses, ride logs and lesson completion IDs. Each horse has a stable generated ID; each ride links to a horse ID, so horse renames do not break history. Archive horses rather than deleting related history. Self-reflection selections are user-entered observations, never algorithmic skill ratings.
+Horse photos are resized JPEG data URLs inside the private JSON document. This is simple but whole-document history can grow quickly; split records/photos into dedicated entities before large-scale use. Optimistic versioning avoids silent overwrites; no live subscription or offline write queue. Account/session changes remount the app. Legacy local data is read only after explicit migration; it is not silently assigned to an account.
 
-IndexedDB stores a versioned state object in `records` and original video Blobs in `videos`. Save operations update the state and media together in one transaction. On a storage failure, the React state remains at the previous saved value. This release has no encryption layer, authentication, online accounts, automatic backups, synchronization, or multi-tab conflict resolution. Avoid simultaneously editing the same store from multiple tabs; a later save can replace another tab's changes.
+Manual JSON export is an account-level records/photos copy excluding clip links. Encrypted scheduled backups include records, versions, account mappings, memberships, setup SQL, media inventory and all binary clips. Logical capture is not a global transaction/PITR image. Credentials and password hashes are excluded. Recovery drills create a copy in a different, empty test account; no production overwrite script is supplied.
 
-Photo data URLs are resized/encoded JPEGs and included in backups. JSON import validates schema/IDs/horse links, strips media references and copies only allowlisted properties. Restoring replaces the current state and clears existing clip storage in one transaction. The UI confirms this replacement first. Clips are intentionally excluded from JSON to keep backups manageable.
+The PGlite harness emulates auth.uid, authenticated/anon roles and Storage metadata to execute the actual setup SQL and test ownership, nonmember denial, stale versions and media-path restrictions. It is useful authorization coverage, not a substitute for live Supabase Auth/Storage tests or advisors. Backup tests mock Supabase HTTP responses, then verify encrypted archive round-trip, hashes, wrong-passphrase rejection and non-overwrite behavior. Drive transfer and live project setup require end-to-end verification.
 
-## Next build sequence
-
-1. User-test horse records, photos, journal and local backups on the user's PC and iPhone Safari. Add browser tests for file handling and import/export. Validate generated native app in Xcode and test app lifecycle/storage on real iPhones.
-2. Add sign-in and a backend with per-account ownership checks, private photo/video storage, authenticated URLs, database migrations, export/delete controls and tested backups. Scope and approve a provider before provisioning any paid service. Do not describe local records as synced.
-3. Review learning content with qualified English-riding instructors. Add source/reviewer/version metadata and accessible illustrations. Replace the six starter guides with a reviewed curriculum as appropriate.
-4. Add server-side LLM questions grounded in reviewed lessons. Explicitly show approved horse context; never put provider keys in VITE_ variables or native assets. Supply references and uncertainty. Clinical diagnosis/treatment is outside scope.
-5. Add optional private short-clip upload and background review behind a feature flag. First scope: one rider/horse, fixed side view, walk/trot, full bodies visible; at most two timestamped posture observations, one visibility limitation and one reviewed practice focus. Sparse frames cannot support rhythm, exact angle, subtle contact or competence claims. Return unable-to-assess for unsuitable clips. Test against instructor-labeled footage before release.
-
-The current local video field accepts other gaits because it is a general journal and self-review tool. A future AI endpoint must independently reject unsupported footage instead of treating journal labels as validated.
-
-## Distribution
-
-Node dependencies are pinned by package-lock.json. Capacitor 8 project uses Swift Package Manager. Native compilation is a separate step on a suitable Mac/Xcode environment; generated native sources do not equal a signed or App Store-ready application. Review app identifiers and app icons before distribution. Changing the native package identifier may change its local storage identity.
-
-The stylesheet optionally loads Google Fonts; system/Georgia fallbacks remain usable when offline. No horse records/media are transmitted to a server in this release. Production static hosting should use HTTPS. No service worker is configured, so the website is not guaranteed to reload offline; native iOS bundles the built assets.
+Future: live two-account integration tests/advisors; native device tests; dedicated record/media schema; reviewed learning content; server-side grounded AI Q&A; gated narrow video critique with instructor evaluation. Do not modify Rangebook production or recovery projects.

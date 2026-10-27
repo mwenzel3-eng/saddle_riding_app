@@ -1,73 +1,25 @@
-# Start here — Saddle School
+# Sign-in fix — v0.2.1
 
-This is the new shared web + iPhone project. You do not need the earlier Swift-only starter.
+This version fixes production Supabase configuration. Vite must read direct import.meta.env.VITE_SUPABASE_* properties; an alias in v0.2 caused the production bundle to miss the configured Render values.
 
-## On your PC
+For an existing v0.2 repository, copy src/cloud.ts and src/vite-env.d.ts from this release into your repository, commit, push, and redeploy. Keep the existing Render VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY variables. The database setup is already installed in the Saddle School project; do not run setup.sql again.
 
-1. Install Node.js 22.12 or newer (Node 24 LTS recommended).
-2. Extract the ZIP.
-3. Copy the **contents** of saddle-school-web into your local riding-app repository. package.json must be directly inside your repository folder. Keep your repository’s existing .git directory. If that repository already contains another app, use a separate branch or empty folder rather than overwriting it.
-4. Open a terminal in that folder. Run these commands separately:
+The production-config regression test builds with fixture public values and checks that they are embedded in the generated bundle. Run npm run test:config after copying the full package.
 
-```bash
-npm ci
-npm run dev
-```
+# Saddle School — private cloud edition
 
-5. Open the Local URL printed by Vite (normally http://localhost:5173).
-6. Choose Add your first horse. Add a horse name and photo, then log a ride.
+This is the complete v0.2.1 project update. It adds private account sign-in, Supabase records and clip storage, save-conflict protection, retained document history, and an encrypted daily Google Drive backup workflow.
 
-Stop the server with Ctrl+C. Restart later using npm run dev. Your saved records should remain in that same browser and origin.
+**Start with CLOUD_SETUP.md.** A separate Saddle School Supabase project and its public configuration are required. This package does not connect to or alter Rangebook.
 
-## What is working
+1. Extract the ZIP and copy the contents of saddle-school-web into your PC repository, including `.github` and `.env.example`. Keep your existing `.git` directory.
+2. Follow CLOUD_SETUP.md to create the riding project, run supabase/setup.sql, create your account/membership and configure Render.
+3. For PC development: copy .env.example to .env and enter ONLY the riding URL/publishable key. Run `npm ci`, then `npm run dev`.
+4. Push your source changes to GitHub; Render builds with `npm ci && npm run build`, publishing dist.
+5. Configure and test external backups using CLOUD_SETUP.md. Backups are not active merely because the app is deployed.
 
-- Responsive desktop and phone layout.
-- Horse profiles with uploaded JPG/PNG/WebP photos, breed, birth year, relationship, discipline, care notes and tack notes.
-- Edit/archive/restore horses. Archiving retains ride history.
-- Rider profile, experience and learning goal.
-- Ride journal: date, duration, gait, exercises, notes, next practice focus, and self-reflection.
-- Optional video attachment, local playback and guided self-review. Playback depends on browser support for the original video’s codec; MP4/H.264 is a practical choice for broad compatibility.
-- Six starter guides with completion tracking. They are labeled as not yet instructor-reviewed.
-- JSON backup/download and validated restore for records and horse photos.
-- Generated Capacitor iOS project using the same web interface.
+The browser/iPhone clients share the same cloud account. Reload to fetch newer records from another device. No offline queue is included. Records cannot silently fall back to browser-only storage if configuration is missing.
 
-## What comes next
+The existing ios/ project uses the same web interface. On a Mac with compatible Xcode, set the same two public variables in .env, then run `npm ci`, `npm run ios:sync`, and `npm run ios:open`. Choose signing/bundle ID and test on devices. Do not run ios:add again.
 
-AI questions and AI video analysis are not connected. Accounts, cloud storage, cross-device sync, and reviewed teaching content are not implemented. No API key is required to run this version. Nothing has been deployed and your GitHub repository has not been modified remotely.
-
-Data lives in IndexedDB in your current browser/app. A web browser and an installed iPhone app have separate stores. Even browsers on the same PC have separate stores. Use a downloaded backup to transfer records and photos manually until cloud sync is added. Clip files are excluded from backups; keep originals. Browser storage is not a guaranteed backup. Do not clear site data or uninstall without saving records you need.
-
-The photo picker accepts JPG, PNG, WebP, not HEIC. Photos are resized to a maximum 1000 px edge before local storage. Video clips must be MP4, MOV, or WebM under 50 MB; clip duration is not automatically enforced. Prefer 15–30 second clips for self-review.
-
-## iPhone browser
-
-After hosting the production web build on HTTPS, open its URL in Safari. You can use Share > Add to Home Screen for quick access. This release does not include a service worker or offline website-install behavior.
-
-To try the PC development server from an iPhone on the same Wi-Fi, use the Network URL printed by Vite. localhost on your iPhone refers to the phone, not your PC. Your firewall may need to allow the local development port on your private network. Do not expose the development server publicly.
-
-## Native iPhone app (later, on a Mac)
-
-The ios folder already exists. Do **not** run ios:add again.
-
-With a Capacitor-compatible Xcode installation, run:
-
-```bash
-npm ci
-npm run ios:sync
-npm run ios:open
-```
-
-In Xcode, choose your signing team and a unique bundle identifier, select a simulator or connected iPhone, then Run. Before distributing, replace com.saddleschool.app with your chosen identifier consistently in capacitor.config.ts and the Xcode target, add app icons, test on actual devices, and complete Apple distribution requirements.
-
-After each web-code change, run npm run ios:sync again to copy the latest build into iOS. iOS assets are bundled; the native app does not point at a PC development server. Xcode compilation/signing have not been tested in this Linux environment.
-
-## Build and GitHub
-
-```bash
-npm test
-npm run build
-```
-
-The production website is in dist/. A static host can use npm ci && npm run build as its build command and dist as its publish directory. This project uses no server routes; all current data is device-local.
-
-After checking git status in your own repository, commit these source files using your usual Git workflow. Do not commit node_modules, personal backup JSON files, photos, or videos. The lockfile should be committed.
+Manual JSON downloads still exclude clips; scheduled encrypted owner backups include them. Original local records require an explicit import; see CLOUD_SETUP.md. AI remains unconnected.
