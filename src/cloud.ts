@@ -1,9 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 import type { State } from './data';
 import { emptyState, validateBackup } from './data';
-const env = (import.meta as unknown as {env:Record<string,string|undefined>}).env;
-const url = env.VITE_SUPABASE_URL || '';
-const key = env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
+// Vite replaces direct import.meta.env properties at build time. Do not alias env.
+const url = import.meta.env.VITE_SUPABASE_URL || '';
+const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 function isPublicKey(value:string){if(value.startsWith('sb_publishable_'))return true;try{return JSON.parse(atob(value.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).role==='anon';}catch{return false;}}
 export const configurationError = !url || !key ? 'Cloud storage is not configured. Add the Supabase URL and publishable key in Render, then redeploy.' : !/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(url) || !isPublicKey(key) ? 'Check the Supabase project URL and publishable key. Never use a secret or service-role key in the app.' : '';
 export const cloud = configurationError ? null : createClient(url,key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});

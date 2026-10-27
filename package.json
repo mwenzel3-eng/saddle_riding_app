@@ -1,6 +1,6 @@
 {
   "name": "saddle-school",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "engines": {
@@ -15,7 +15,8 @@
     "ios:sync": "npm run build && cap sync ios",
     "ios:open": "cap open ios",
     "backup": "node scripts/backup.mjs",
-    "backup:unpack": "node scripts/unpack-backup.mjs"
+    "backup:unpack": "node scripts/unpack-backup.mjs",
+    "test:config": "node --test scripts/config-build.test.mjs"
   },
   "dependencies": {
     "@capacitor/core": "^8.0.0",

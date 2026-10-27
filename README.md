@@ -1,4 +1,4 @@
-# Saddle School — private cloud edition v0.2
+# Saddle School — private cloud edition v0.2.1
 
 Shared React/TypeScript/Vite interface for the web and Capacitor iOS, with Supabase Auth, private per-account documents, private clip storage, optimistic save conflicts, retained versions, and an encrypted Google Drive backup workflow.
 

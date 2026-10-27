@@ -1,6 +1,14 @@
+# Sign-in fix — v0.2.1
+
+This version fixes production Supabase configuration. Vite must read direct import.meta.env.VITE_SUPABASE_* properties; an alias in v0.2 caused the production bundle to miss the configured Render values.
+
+For an existing v0.2 repository, copy src/cloud.ts and src/vite-env.d.ts from this release into your repository, commit, push, and redeploy. Keep the existing Render VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY variables. The database setup is already installed in the Saddle School project; do not run setup.sql again.
+
+The production-config regression test builds with fixture public values and checks that they are embedded in the generated bundle. Run npm run test:config after copying the full package.
+
 # Saddle School — private cloud edition
 
-This is the complete v0.2 project update. It adds private account sign-in, Supabase records and clip storage, save-conflict protection, retained document history, and an encrypted daily Google Drive backup workflow.
+This is the complete v0.2.1 project update. It adds private account sign-in, Supabase records and clip storage, save-conflict protection, retained document history, and an encrypted daily Google Drive backup workflow.
 
 **Start with CLOUD_SETUP.md.** A separate Saddle School Supabase project and its public configuration are required. This package does not connect to or alter Rangebook.
 
