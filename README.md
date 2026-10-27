@@ -1,39 +1,23 @@
-# Saddle School
+# Saddle School — private cloud edition v0.2
 
-A shared React + TypeScript + Vite application for the web and Capacitor iOS.
+Shared React/TypeScript/Vite interface for the web and Capacitor iOS, with Supabase Auth, private per-account documents, private clip storage, optimistic save conflicts, retained versions, and an encrypted Google Drive backup workflow.
 
-**Read [START_HERE.md](START_HERE.md) for installation, data limitations and iPhone instructions.**
+**Read [START_HERE.md](START_HERE.md), then [CLOUD_SETUP.md](CLOUD_SETUP.md).** The project is not live-configured. A new, dedicated Supabase project is required; neither Rangebook project was changed.
 
 ## Commands
 
-| Command | Purpose |
-| --- | --- |
-| npm ci | Install the locked dependencies |
-| npm run dev | Start the local development server |
-| npm test | Validate backup boundaries and date handling |
-| npm run build | Type-check and produce dist/ |
-| npm run preview | Serve the production build locally |
-| npm run ios:sync | Build and copy web output into the existing iOS project |
-| npm run ios:open | Open the iOS project in Xcode (Mac) |
+- npm ci — install locked dependencies
+- npm run dev — development server, requires public Supabase values in .env
+- npm run build — type-check and produce dist/
+- npm test — backup-schema, Postgres authorization/conflict, and mocked encrypted-backup round-trip tests
+- npm run ios:sync — build/copy web assets into existing native project
+- npm run ios:open — open Xcode (Mac)
+- npm run backup — server-only full application backup; requires privileged environment variables
 
-## Layout
+## Files
 
-- src/main.tsx — interface, forms, and navigation
-- src/data.ts — entities, record factories and backup schema validation
-- src/storage.ts — IndexedDB persistence, atomic record/media updates, photo processing
-- src/lessons.ts — six clearly labeled starter guides
-- src/style.css — responsive layout and visual system
-- src/data.test.ts — backup/date tests
-- capacitor.config.ts and ios/ — native app configuration and generated Xcode project
-- DEVELOPMENT.md — implementation boundaries and next steps
+src/Auth.tsx handles invite-only password sign-in. src/cloud.ts loads/saves private records and media. src/storage.ts retains legacy local reads for explicit migration only. supabase/setup.sql creates the dedicated-project schema and policies. scripts/backup.mjs, unpack-backup.mjs and recover-account.mjs handle encrypted backups, verification and a guarded isolated recovery drill. .github/workflows/private-backup.yml schedules copies at approximately 3 a.m. Arizona once configured.
 
-## Validation
+AI answers and automated video critique remain pending. Guides are starter material awaiting instructor review. Administrator-managed credential recovery is required; the app does not yet implement email reset/invite link handling. Media and document history are retained indefinitely without automatic pruning.
 
-Production TypeScript/Vite build and backup validation tests passed. Browser QA covered creating a horse, saving a linked ride, reloading and checking persistence, and opening/completing a learning guide. Native project generation and web-asset synchronization passed. Native compilation, real iPhone behavior, photo/video format handling, backup restore through the UI, and cloud features were not device-tested here.
-
-## Official references
-
-- https://vite.dev/guide/
-- https://capacitorjs.com/docs
-- https://capacitorjs.com/docs/getting-started/environment-setup
-- https://capacitorjs.com/docs/basics/workflow
+No cloud project, account, provider billing, backup schedule or live Render setting was created by this package. Live end-to-end deployment, private-media access, Drive transfer and native iOS compilation remain to be verified after setup.
