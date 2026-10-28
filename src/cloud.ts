@@ -35,7 +35,7 @@ export async function loadCloud(): Promise<State> {
  const id=await identity();
  const {data:member,error:memberError}=await cloud!.from('saddle_members').select('user_id').eq('user_id',id).maybeSingle();
  if(memberError)throw new Error('Cloud setup is incomplete. Ask the app owner to check the database setup.');
- if(!member)throw new Error('This account has not been invited to Saddle School. Ask the app owner for access.');
+ if(!member)throw new Error('Your Saddle Up account is not ready yet. Verify your email, then sign in again.');
  const {data,error}=await cloud!.from('saddle_documents').select('payload,version').eq('user_id',id).maybeSingle();
  if(error)throw new Error('Could not load your cloud records. Check your connection and retry.');
  revision=data?.version??0;

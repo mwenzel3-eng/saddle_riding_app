@@ -1,8 +1,10 @@
-# Saddle School — private cloud edition v0.3.0
+# Saddle Up — your riding world
 
 Shared React/TypeScript/Vite interface for the web and Capacitor iOS, with Supabase Auth, private per-account documents, private clip storage, optimistic save conflicts, retained versions, and an encrypted Google Drive backup workflow.
 
-**Read [START_HERE.md](START_HERE.md), then [CLOUD_SETUP.md](CLOUD_SETUP.md).** The project is not live-configured. A new, dedicated Supabase project is required; neither Rangebook project was changed.
+**New: [Community, stables, trophies and purchase setup](COMMUNITY_AND_STABLE_SETUP.md).**
+
+**Read [START_HERE.md](START_HERE.md), then [CLOUD_SETUP.md](CLOUD_SETUP.md).** The existing dedicated riding Supabase project is used. The backend feature migrations are deployed; website and merchant/email rollout steps are in the new setup guide. Neither Rangebook project is changed.
 
 ## Commands
 
@@ -18,7 +20,7 @@ For AI video critiques, see [AI_SETUP.md](AI_SETUP.md). To create or replace the
 
 ## Files
 
-src/Auth.tsx handles invite-only password sign-in. src/cloud.ts loads/saves private records and media. src/storage.ts retains legacy local reads for explicit migration only. supabase/setup.sql creates the dedicated-project schema and policies. scripts/backup.mjs, unpack-backup.mjs and recover-account.mjs handle encrypted backups, verification and a guarded isolated recovery drill. .github/workflows/private-backup.yml schedules copies at approximately 3 a.m. Arizona once configured.
+src/Auth.tsx handles email/password sign-in and public signup. src/cloud.ts loads/saves private records and media. src/storage.ts retains legacy local reads for explicit migration only. supabase/setup.sql creates the dedicated-project schema and policies. scripts/backup.mjs, unpack-backup.mjs and recover-account.mjs handle encrypted backups, verification and a guarded isolated recovery drill. .github/workflows/private-backup.yml schedules copies at approximately 3 a.m. Arizona once configured.
 
 AI coach supports video critique with private saved history; configure its OpenAI key using the guide above. General AI chat remains pending. Guides are starter material awaiting instructor review. Administrator-managed credential recovery is required; the app does not yet implement email reset/invite link handling. Media and document history are retained indefinitely without automatic pruning.
 

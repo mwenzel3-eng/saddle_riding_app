@@ -1,3 +1,4 @@
+import {CritiqueFeedback} from './CritiqueFeedback';
 import {useEffect,useRef,useState} from 'react';
 import type {Ride} from './data';
 import {cloud,downloadVideo} from './cloud';
@@ -63,6 +64,6 @@ export function VideoCoach({rides}:{rides:Ride[]}) {
   <div className="button-row" style={{marginTop:20}}><button className="primary" disabled={busy||!consent||(!file&&!rideId)||remaining===0||waitSeconds>0} onClick={()=>void critique()}>{busy?status:'Critique my video'}</button></div>
   <p className="small muted">Use feedback with your instructor. AI may misread a frame and cannot diagnose soundness, assess saddle fit, or give official scores.</p>
   {error&&<p role="alert" className="error-text">{error}</p>}
-  {result&&<div className="practice" aria-live="polite"><h3>Your riding critique</h3><p className="small" role="status">{saveMessage}</p><div className="prewrap">{result}</div></div>}
+  {result&&<div className="practice" aria-live="polite"><h3>Your riding critique</h3><p className="small" role="status">{saveMessage}</p><CritiqueFeedback text={result}/></div>}
  </section><CritiqueHistory refreshKey={historyVersion}/></>;
 }

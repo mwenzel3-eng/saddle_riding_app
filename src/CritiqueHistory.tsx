@@ -1,3 +1,4 @@
+import {CritiqueFeedback} from './CritiqueFeedback';
 import {useEffect,useRef,useState} from 'react';
 import {cloud} from './cloud';
 
@@ -20,7 +21,7 @@ export function CritiqueHistory({refreshKey}:{refreshKey:number}) {
   <p className="small muted">Private to your account and available on your other devices. Open a critique to read the full feedback.</p>
   {error&&<p className="error-text" role="alert">{error}</p>}
   {!items.length&&!busy&&!error&&<p>No saved critiques yet. Your next successful critique will appear here.</p>}
-  {items.map(item=><details key={item.id} className="practice"><summary><strong>{item.clip_name}</strong> · {new Date(item.created_at).toLocaleString()}</summary>{item.focus&&<p className="prewrap"><strong>Your question:</strong> {item.focus}</p>}<div className="prewrap">{item.critique}</div></details>)}
+  {items.map(item=><details key={item.id} className="practice"><summary><strong>{item.clip_name}</strong> · {new Date(item.created_at).toLocaleString()}</summary>{item.focus&&<p className="prewrap"><strong>Your question:</strong> {item.focus}</p>}<CritiqueFeedback text={item.critique}/></details>)}
   {busy&&<p role="status">Loading saved critiques…</p>}
   {more&&<button className="secondary" disabled={busy} onClick={()=>void load(items.length,generation.current)}>Load older critiques</button>}
  </section>;

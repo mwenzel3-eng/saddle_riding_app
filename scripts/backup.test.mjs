@@ -23,6 +23,10 @@ test('backup encrypts records/media, verifies hashes on unpack, and rejects wron
  if(p.startsWith('/storage/v1/object/'))return new Response('fake-video-bytes',{headers:{'Content-Type':'video/mp4'}});
  if(p==='/rest/v1/saddle_documents'||p==='/rest/v1/saddle_versions')return json([R]);
  if(p==='/rest/v1/saddle_members')return json([{user_id:U}]);
+ if(p==='/rest/v1/saddle_rider_pictures')return json([{user_id:U,photo:'',avatar_item_id:'avatar-sage'}]);
+ if(p==='/rest/v1/saddle_show_results')return json([{user_id:U,show_name:'Test show'}]);
+ if(p==='/rest/v1/rpc/saddle_private_backup')return json({decor_receipts:[]});
+ if(p.startsWith('/rest/v1/saddle_'))return json([]);
  if(p==='/auth/v1/admin/users')return json({users:[{id:U,email:'test@example.invalid'}],aud:'authenticated',total:1});
  throw new Error('Unexpected test request: '+p);
  };`;
@@ -36,6 +40,9 @@ test('backup encrypts records/media, verifies hashes on unpack, and rejects wron
   const good=run(destination);assert.equal(good.status,0,good.stderr);
   assert.equal((await readFile(path.join(destination,'media/0.bin'))).toString(),'fake-video-bytes');
   const saved=JSON.parse(await readFile(path.join(destination,'records/documents.json'),'utf8'));assert.equal(saved[0].user_id,user);
+  assert.equal(JSON.parse(await readFile(path.join(destination,'records/saddle_rider_pictures.json'),'utf8'))[0].avatar_item_id,'avatar-sage');
+  assert.equal(JSON.parse(await readFile(path.join(destination,'records/saddle_show_results.json'),'utf8'))[0].show_name,'Test show');
+  assert.deepEqual(JSON.parse(await readFile(path.join(destination,'records/private-features.json'),'utf8')),{decor_receipts:[]});
   assert.notEqual(run(destination).status,0,'must refuse existing restore directory');
   assert.notEqual(run(path.join(dir,'wrong'),{BACKUP_PASSPHRASE:'wrong-passphrase-1234567890'}).status,0);
  }finally{await rm(dir,{recursive:true,force:true});}

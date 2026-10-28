@@ -1,3 +1,7 @@
+# Saddle Up community update
+
+See [COMMUNITY_AND_STABLE_SETUP.md](COMMUNITY_AND_STABLE_SETUP.md) for public signup, rider connections/discussions, owned-horse stable pages, trophy rooms, badges, and $0.99 decoration purchases. Backend migrations are deployed to the existing riding project. Merchant products/secrets and production signup email delivery still require setup. Do not run the original base setup.sql again on that project.
+
 # Native iPhone setup — v0.3.0
 
 Read IPHONE_SETUP.md. On your Mac run npm ci, then npm run iphone. The existing riding cloud project is configured for this native build. Xcode signing and real-device testing remain required.
