@@ -1,10 +1,17 @@
 import {createClient} from 'npm:@supabase/supabase-js@2.118.0';
 import {createHandler} from './handler.ts';
+import type {CritiqueEntry} from './handler.ts';
 
 Deno.serve(createHandler({
  key:()=>Deno.env.get('OPENAI_API_KEY'),
  model:()=>Deno.env.get('OPENAI_MODEL')||'gpt-4.1-mini',
  fetch,
+ saveCritique:async(user:string,entry:CritiqueEntry)=>{
+  const admin=createClient(Deno.env.get('SUPABASE_URL')!,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,{auth:{persistSession:false,autoRefreshToken:false}});
+  const {data,error}=await admin.from('saddle_critiques').insert({...entry,user_id:user}).select('id,created_at').single();
+  if(error||!data)throw new Error('Critique save failed');
+  return data;
+ },
  quota:async(user:string,reserve:boolean)=>{
   const admin=createClient(Deno.env.get('SUPABASE_URL')!,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,{auth:{persistSession:false,autoRefreshToken:false}});
   const {data,error}=await admin.rpc('saddle_critique_quota',{target_user_id:user,reserve});

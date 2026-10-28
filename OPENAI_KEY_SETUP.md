@@ -42,7 +42,8 @@ Official Supabase documentation: [Edge Function secrets](https://supabase.com/do
 2. Open **AI coach**.
 3. Choose a riding clip under 50 MB and no longer than 60 seconds, or choose a saved clip.
 4. Enter a feedback question, agree to sending sampled frames to OpenAI, and click **Critique my video**.
-5. Confirm a critique appears and the remaining daily allowance decreases by one.
+5. Confirm a critique appears with a saved confirmation and the remaining daily allowance decreases by one.
+6. Leave AI coach and reopen it. Expand the new entry under **Saved critiques** to confirm the feedback reloads from your account.
 
 The test makes a paid API request and uses one of the user's five daily attempts. Provider failures and timeouts also use a credit once an AI request has been reserved. The app enforces a 60-second cooldown and resets daily allowances at midnight UTC, which is 5 p.m. in Arizona.
 
