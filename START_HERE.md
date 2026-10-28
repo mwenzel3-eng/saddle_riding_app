@@ -1,3 +1,7 @@
+# Native iPhone setup — v0.3.0
+
+Read IPHONE_SETUP.md. On your Mac run npm ci, then npm run iphone. The existing riding cloud project is configured for this native build. Xcode signing and real-device testing remain required.
+
 # Sign-in fix — v0.2.1
 
 This version fixes production Supabase configuration. Vite must read direct import.meta.env.VITE_SUPABASE_* properties; an alias in v0.2 caused the production bundle to miss the configured Render values.

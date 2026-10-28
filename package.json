@@ -1,6 +1,6 @@
 {
   "name": "saddle-school",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -12,15 +12,18 @@
     "preview": "vite preview --host 0.0.0.0",
     "test": "node --experimental-strip-types --test src/data.test.ts && node --test scripts/schema.test.mjs scripts/backup.test.mjs",
     "ios:add": "cap add ios",
-    "ios:sync": "npm run build && cap sync ios",
+    "ios:sync": "node scripts/prepare-ios.mjs",
     "ios:open": "cap open ios",
     "backup": "node scripts/backup.mjs",
     "backup:unpack": "node scripts/unpack-backup.mjs",
-    "test:config": "node --test scripts/config-build.test.mjs"
+    "test:config": "node --test scripts/config-build.test.mjs",
+    "iphone": "node scripts/prepare-ios.mjs --open"
   },
   "dependencies": {
     "@capacitor/core": "^8.0.0",
+    "@capacitor/filesystem": "8.1.5",
     "@capacitor/ios": "^8.0.0",
+    "@capacitor/share": "8.0.3",
     "@supabase/supabase-js": "2.118.0",
     "idb": "^8.0.0",
     "lucide-react": "^0.468.0",

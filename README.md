@@ -1,4 +1,4 @@
-# Saddle School — private cloud edition v0.2.1
+# Saddle School — private cloud edition v0.3.0
 
 Shared React/TypeScript/Vite interface for the web and Capacitor iOS, with Supabase Auth, private per-account documents, private clip storage, optimistic save conflicts, retained versions, and an encrypted Google Drive backup workflow.
 
@@ -21,3 +21,7 @@ src/Auth.tsx handles invite-only password sign-in. src/cloud.ts loads/saves priv
 AI answers and automated video critique remain pending. Guides are starter material awaiting instructor review. Administrator-managed credential recovery is required; the app does not yet implement email reset/invite link handling. Media and document history are retained indefinitely without automatic pruning.
 
 No cloud project, account, provider billing, backup schedule or live Render setting was created by this package. Live end-to-end deployment, private-media access, Drive transfer and native iOS compilation remain to be verified after setup.
+
+## iPhone
+
+Run npm ci then npm run iphone on a Mac. See IPHONE_SETUP.md. Native configuration is in config/public-cloud.json. The native backup share sheet is available through the Filesystem and Share plugins.

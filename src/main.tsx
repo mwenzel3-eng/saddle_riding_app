@@ -6,6 +6,7 @@ import { emptyState, newHorse, newRide, uid, localDate, validateBackup, exportab
 import { loadState, saveState, replaceState, photoData, getVideo } from './storage';
 import { lessons } from './lessons';
 import './style.css';
+import { exportBackup } from './backupExport';
 import { Auth } from './Auth';
 import { cloud, listVersions, loadVersion } from './cloud';
 import { loadLegacyState } from './storage';
@@ -34,7 +35,7 @@ function App({user}:{user:User}) {
  const recent=[...state.rides].sort((a,b)=>b.date.localeCompare(a.date));
  const countHours = Math.round(state.rides.reduce((n,r)=>n+r.minutes,0)/60*10)/10;
  async function openVideo(ride:Ride) {try {const blob=ride.videoId?await getVideo(ride.videoId):undefined;if(!blob) throw new Error();setPlay({url:URL.createObjectURL(blob),name:ride.videoName||'Ride video'});}catch{setError('Could not load this private clip. Check your connection and retry.');}}
- function backup() { const blob=new Blob([JSON.stringify(exportable(state),null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`saddle-school-backup-${localDate()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);setNotice('Backup downloaded: records and horse photos included. Video files are not included; keep your originals.'); }
+ async function backup() {try{const result=await exportBackup(JSON.stringify(exportable(state),null,2),`saddle-school-backup-${localDate()}.json`);setNotice(result==='shared'?'Backup share sheet closed. Confirm you saved a copy in Files. Records and horse photos are included; clips are excluded.':'Backup downloaded: records and horse photos included. Video files are not included; keep your originals.');}catch{setError('Backup export was canceled or could not finish. Try again and choose Save to Files on iPhone.');} }
  async function restore(file:File) {
   if(file.size>40*1024*1024) {setError('Backup must be under 40 MB.');return;}
   try {const next=validateBackup(JSON.parse(await file.text()));if(!confirm(`Replace your cloud records with ${next.horses.length} horses and ${next.rides.length} rides? This applies across your devices. Your previous saved version and clip files remain retained for owner-assisted recovery. Download a backup first.`))return;
