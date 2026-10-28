@@ -10,7 +10,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "test": "node --experimental-strip-types --test src/data.test.ts && node --test scripts/schema.test.mjs scripts/backup.test.mjs",
+    "test": "node --experimental-strip-types --test src/data.test.ts && node --test scripts/schema.test.mjs scripts/backup.test.mjs && node --experimental-strip-types --test scripts/video-critique.test.mjs scripts/critique-quota.test.mjs",
     "ios:add": "cap add ios",
     "ios:sync": "node scripts/prepare-ios.mjs",
     "ios:open": "cap open ios",

@@ -6,6 +6,8 @@ Shared React/TypeScript/Vite interface for the web and Capacitor iOS, with Supab
 
 ## Commands
 
+For AI video critiques, see [AI_SETUP.md](AI_SETUP.md). To create or replace the OpenAI key and save it in Supabase, follow [OPENAI_KEY_SETUP.md](OPENAI_KEY_SETUP.md).
+
 - npm ci — install locked dependencies
 - npm run dev — development server, requires public Supabase values in .env
 - npm run build — type-check and produce dist/
